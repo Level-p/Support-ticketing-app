@@ -4,6 +4,10 @@ const { createTicket, getTickets, getSingleTicket, deleteTicket, updateTicket } 
 
 const {protect} = require('../middleware/authMiddleware') 
 
+// Re-route into note router
+const noteRouter = require('./noteRoute')
+router.use('/:ticketId/notes', noteRouter)
+
 router.route('/').get(protect, getTickets).post(protect, createTicket)
 
 router.route('/:id').get(protect, getSingleTicket).delete(protect, deleteTicket).put(protect, updateTicket)
