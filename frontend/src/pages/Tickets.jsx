@@ -28,7 +28,7 @@ function Tickets() {
 
   return (
     <>
-        <BackButton />
+        <BackButton url={'/'}/>
         <h1>Tickets</h1>
         <div className="tickets">
             <div className="ticket-headings">
