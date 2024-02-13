@@ -9,8 +9,8 @@
     "client": "npm start --prefix frontend",
     "install-client": "cd frontend && npm install",
     "install-backend": "cd backend && npm install",
-    "deploy": "npm build --prefix frontend",
-    "pro": "concurrently \"npm run server\" \"npm run deploy\"",
+    "backend-start": "cd backend nodemon server.js",
+    "fronted-start": "cd frontend && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Steven Onoja",
