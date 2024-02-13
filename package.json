@@ -10,7 +10,7 @@
     "install-client": "cd frontend && npm install",
     "install-backend": "cd backend && npm install",
     "backend-start": "cd backend && node server.js",
-    "fronted-start": "cd frontend && npm run build",
+    "frontend-start": "cd frontend && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Steven Onoja",
