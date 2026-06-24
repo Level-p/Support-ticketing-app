@@ -29,6 +29,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Verify secrets exist
+        run: |
+          echo "KEY_PRESENT=${{ secrets.AWS_ACCESS_KEY_ID != '' }}"
+          echo "SECRET_PRESENT=${{ secrets.AWS_SECRET_ACCESS_KEY != '' }}"
+
       # ======================
       # AWS CREDENTIALS
       # ======================
