@@ -1,0 +1,33 @@
+{
+  "family": "frontend-task-prod",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+
+  "cpu": "2048",
+  "memory": "4096",
+
+  "executionRoleArn": "arn:aws:iam::127214197057:role/ecsTaskExecutionRole",
+
+  "containerDefinitions": [
+    {
+      "name": "frontend",
+      "image": "127214197057.dkr.ecr.eu-west-2.amazonaws.com/frontend-repo:latest",
+
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/frontend-prod",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
