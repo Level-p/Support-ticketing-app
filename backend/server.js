@@ -11,7 +11,7 @@ connectDB()
 
 const app = express()
 
-app.use(cors({origin: 'https://support-ticket-frontend-tlmt.onrender.com'}))
+app.use(cors({origin: 'https://mfon21.space'}))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
