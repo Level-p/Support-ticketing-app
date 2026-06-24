@@ -26,3 +26,4 @@ app.use('/api/tickets', require('./routes/tickeRoutes'))
 app.use(errorHandler)
 
 app.listen( PORT, () => console.log(`Server started on port ${PORT}`))
+// fixed
