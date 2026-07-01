@@ -1,119 +1,3 @@
-# name: Deploy Frontend + Backend to ECS
-
-# on:
-#   push:
-#     branches: ["main"]
-
-# env:
-#   AWS_REGION: eu-west-2
-
-#   FRONTEND_ECR: frontend
-#   BACKEND_ECR: backend
-#   ACCOUNT_ID: 127214197057
-#   ECS_CLUSTER: practice-ecs-cluster
-#   FRONTEND_SERVICE: frontend-service
-#   BACKEND_SERVICE: backend-service
-
-# permissions:
-#   id-token: write
-#   contents: read
-
-# jobs:
-#   deploy:
-#     name: Build and Deploy
-#     runs-on: ubuntu-latest
-#     environment: production
-
-#     steps:
-#       # ======================
-#       # CHECKOUT
-#       # ======================
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       # ======================
-#       # AWS CREDENTIALS
-#       # ======================
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           role-to-assume: ${{ secrets.OIDC_IAM }}
-#           aws-region: ${{ env.AWS_REGION}}
-#           # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           # aws-region: ${{ env.AWS_REGION }}
-
-#       # ======================
-#       # LOGIN TO ECR
-#       # ======================
-#       - name: Login to Amazon ECR
-#         id: login-ecr
-#         uses: aws-actions/amazon-ecr-login@v2
-
-#       # ======================
-#       # BUILD FRONTEND
-#       # ======================
-#       - name: Build Frontend Image
-#         run: |
-#           docker build -t $FRONTEND_ECR ./frontend
-#           docker tag $FRONTEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:latest
-#           docker push ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:latest
-
-#       # ======================
-#       # BUILD BACKEND
-#       # ======================
-#       - name: Build Backend Image
-#         run: |
-#           docker build -t $BACKEND_ECR ./backend
-#           docker tag $BACKEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:latest
-#           docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:latest
-
-#       # ======================
-#       # FORCE DEPLOY FRONTEND
-#       # ======================
-#       - name: Deploy Frontend Service
-#         run: |
-#           aws ecs update-service \
-#             --cluster $ECS_CLUSTER \
-#             --service $FRONTEND_SERVICE \
-#             --force-new-deployment
-
-#       # ======================
-#       # FORCE DEPLOY BACKEND
-#       # ======================
-#       - name: Deploy Backend Service
-#         run: |
-#           aws ecs update-service \
-#             --cluster $ECS_CLUSTER \
-#             --service $BACKEND_SERVICE \
-#             --force-new-deployment
-
-#       - name: Notify Success
-#         if: success()
-#         run: |
-#           aws sns publish \
-#             --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
-#             --subject "ECS Deployment Successful" \
-#             --message "
-#             Repository: ${{ github.repository }}
-#             Branch: ${{ github.ref_name }}
-#             Commit: ${{ github.sha }}
-#             Status: SUCCESS
-#             "
-#       - name: Notify Failure
-#         if: failure()
-#         run: |
-#           aws sns publish \
-#             --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
-#             --subject "ECS Deployment Failed" \
-#             --message "
-#             Repository: ${{ github.repository }}
-#             Branch: ${{ github.ref_name }}
-#             Commit: ${{ github.sha }}
-#             Status: FAILED
-#             "
-
-
 name: Production Deploy - Frontend & Backend to ECS
 on:
   push:
@@ -196,15 +80,26 @@ jobs:
       - name: Build Frontend Image
         run: |
           docker build -t $FRONTEND_ECR ./frontend
-          docker tag $FRONTEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:${{ github.sha }}
-          docker push ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:${{ github.sha }}
+          docker tag $FRONTEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:latest
+      # - name: Build Frontend Image
+      #   run: |
+      #     docker build -t $FRONTEND_ECR ./frontend
+      #     docker tag $FRONTEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:${{ github.sha }}
+      #     docker push ${{ steps.login-ecr.outputs.registry }}/$FRONTEND_ECR:${{ github.sha }}
 
       # ---------------- BACKEND ----------------
       - name: Build Backend Image
         run: |
           docker build -t $BACKEND_ECR ./backend
-          docker tag $BACKEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:${{ github.sha }}
-          docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:${{ github.sha }}
+          docker tag $BACKEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:latest
+
+      # - name: Build Backend Image
+      #   run: |
+      #     docker build -t $BACKEND_ECR ./backend
+      #     docker tag $BACKEND_ECR:latest ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:${{ github.sha }}
+      #     docker push ${{ steps.login-ecr.outputs.registry }}/$BACKEND_ECR:${{ github.sha }}
 
 # ---------------------------
 # JOB 3: APPROVAL GATE
