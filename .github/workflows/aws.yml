@@ -147,10 +147,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
+          queries: security-and-quality
+          config: |
+            disable-incremental-analysis: true
 
       - name: Autobuild
         uses:  github/codeql-action/autobuild@v3
