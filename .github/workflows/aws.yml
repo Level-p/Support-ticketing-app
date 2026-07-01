@@ -149,8 +149,8 @@ jobs:
   notify:
     name: SNS Notification
     runs-on: ubuntu-latest
-    needs: deploy
     environment: production
+    needs: [security, build, approve, deploy]
     if: always()
 
     steps:
