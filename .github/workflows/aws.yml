@@ -9,12 +9,13 @@ env:
 
   FRONTEND_ECR: frontend
   BACKEND_ECR: backend
-
+  ACCOUNT_ID: 127214197057
   ECS_CLUSTER: practice-ecs-cluster
   FRONTEND_SERVICE: frontend-service
   BACKEND_SERVICE: backend-service
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
@@ -36,9 +37,11 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::$ACCOUNT_ID:role/github-actions-deploy-role
+          aws-region: ${{ env.AWS_REGION}}
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-region: ${{ env.AWS_REGION }}
 
       # ======================
       # LOGIN TO ECR
@@ -84,3 +87,28 @@ jobs:
             --cluster $ECS_CLUSTER \
             --service $BACKEND_SERVICE \
             --force-new-deployment
+
+      - name: Notify Success
+        if: success()
+        run: |
+          aws sns publish \
+            --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
+            --subject "ECS Deployment Successful" \
+            --message "
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Status: SUCCESS
+            "
+      - name: Notify Failure
+        if: failure()
+        run: |
+          aws sns publish \
+            --topic-arn ${{ secrets.SNS_TOPIC_ARN }} \
+            --subject "ECS Deployment Failed" \
+            --message "
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Status: FAILED
+            "
