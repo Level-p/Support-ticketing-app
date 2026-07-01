@@ -118,6 +118,8 @@ name: Production Deploy - Frontend & Backend to ECS
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 env:
   AWS_REGION: eu-west-2
