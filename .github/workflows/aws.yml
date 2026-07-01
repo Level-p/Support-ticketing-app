@@ -152,7 +152,7 @@ jobs:
           languages: javascript
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild
+        uses: github/codeql-action/@v3
 
       - name: Run CodeQL Analysis
         uses: github/codeql-action/analyze@v3
