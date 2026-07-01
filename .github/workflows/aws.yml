@@ -158,8 +158,8 @@ jobs:
         with:
           languages: javascript-typescript
           queries: security-and-quality
-          config: |
-            disable-incremental-analysis: true
+          # config: |
+          #   disable-incremental-analysis: true
 
       - name: Autobuild
         uses:  github/codeql-action/autobuild@v3
@@ -222,7 +222,6 @@ jobs:
   deploy:
     name: Deploy to ECS
     runs-on: ubuntu-latest
-    environment: production
     needs: approve
 
     steps:
